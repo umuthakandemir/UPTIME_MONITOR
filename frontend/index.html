@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Uptime Monitor Service</title><link rel="icon" type="image/svg+xml" href="/static/assets/um-logo.svg"><link rel="apple-touch-icon" href="/static/assets/um-logo.svg"><link rel="stylesheet" href="/static/css/app.css?v=um-20261009-01">
+</head>
+<body>
+<div class="app-shell">
+<aside class="sidebar">
+  <div class="brand"><img class="brand-logo" src="/static/assets/um-logo.svg" alt="UM — Uptime Monitor Service"><div class="brand-text"><b>Uptime Monitor Service</b><small>Operasyon Merkezi</small></div></div>
+  <nav>
+    <div class="nav-section">GENEL</div>
+    <a data-page="dashboard">▦ <span>Dashboard</span></a>
+
+    <div class="nav-section">İZLEME</div>
+    <div class="nav-tree monitor-tree">
+      <a data-page="services" class="nav-parent">◉ <span>İzleme İşlemleri</span><i id="incidentBadge" class="nav-count">0</i><span class="nav-chevron">⌄</span></a>
+      <div class="nav-children">
+        <a data-page="services">◉ Servisler</a>
+        <a data-page="instant-test">⌁ Anlık Test</a>
+        <a data-page="incidents">⚠ Olaylar</a>
+        <a data-page="logs">≡ İşlem Kayıtları</a>
+        <a data-page="audit">✓ Denetim</a>
+      </div>
+    </div>
+
+    <div class="nav-section">BİLDİRİM MERKEZİ</div>
+    <div class="nav-tree notification-tree">
+      <a data-page="notifications" class="nav-parent">◇ <span>Bildirimler</span><span class="nav-chevron">⌄</span></a>
+      <div class="nav-children">
+        <a data-page="notifications">◈ Bildirim Grupları</a>
+        <a data-page="notification-templates">✎ Bildirim Şablonları</a>
+      </div>
+    </div>
+
+    <div class="nav-section">RAPORLAMA</div>
+    <div class="nav-tree report-tree">
+      <a data-page="reports" class="nav-parent">▤ <span>Raporlar</span><span class="nav-chevron">⌄</span></a>
+      <div class="nav-children">
+        <a data-page="reports">⇩ Raporlar & Export</a>
+      </div>
+    </div>
+
+    <div class="nav-section">SERVİS VERİLERİ</div><div class="nav-tree service-data-tree"><a data-page="service-detail" class="nav-parent">▤ <span>Servis Verileri</span><span class="nav-chevron">⌄</span></a><div class="nav-children"><a data-page="screenshots">▧ Ekran Görüntüleri</a></div></div><div class="nav-section">SİSTEM</div>
+    <div class="nav-tree settings-tree">
+      <a data-page="settings" class="nav-parent">⚙ <span>Ayarlar</span><span class="nav-chevron">⌄</span></a>
+      <div class="nav-children">
+        <a data-page="settings">⚙ Genel Ayarlar</a>
+        <div class="nav-tree nested-tree"><a data-page="integrations" class="nav-parent">✉ <span>Entegrasyonlar</span><span class="nav-chevron">⌄</span></a><div class="nav-children"><a data-page="integrations" data-integration="smtp">SMTP</a><a data-page="integrations" data-integration="telegram">Telegram</a><a data-page="integrations" data-integration="webhook">Webhook</a></div></div>
+        <a data-page="retention">◫ Veri Saklama</a><a data-page="settings" data-settings-section="branding">▣ Uygulama Markası / Logo</a>
+      </div>
+    </div>
+
+    <div class="nav-section">YÖNETİM</div>
+    <a data-page="users" id="usersNav">♙ <span>Kullanıcılar & Roller</span></a>
+
+    <div class="nav-section">GELİŞTİRİCİ</div>
+    <a href="/swagger">⌘ <span>API / Swagger</span></a>
+  </nav>
+  <div class="sidebar-foot"><span class="pulse"></span> Yerel izleme aktif</div>
+</aside>
+<main class="main">
+<header class="topbar"><div><div class="eyebrow" id="pageKicker">Uptime Monitor Service</div><h1 id="pageTitle">Dashboard</h1></div><div class="top-actions"><img id="topBrandLogo" class="top-brand-logo" src="/static/assets/um-logo.svg" alt="Logo"><div id="userChip" class="user-chip"><span id="userChipName">-</span><small id="userChipRole">-</small></div><span id="clock" class="clock"></span><div class="notification-wrap"><button id="notificationBell" class="theme-btn notification-bell" aria-label="Bildirimler" title="Bildirimler">🔔<span id="notificationCount" class="notification-count hidden">0</span></button><div id="notificationPanel" class="notification-panel hidden"></div></div><button id="themeToggle" class="theme-btn" aria-label="Tema değiştir"></button><button id="logoutBtn" class="icon-btn" title="Oturumu kapat">↪</button></div></header>
+<section id="page" class="page"></section>
+</main>
+</div>
+<div id="serviceModal" class="modal hidden"><div class="modal-card wide service-modal-card"><div class="modal-head"><div><b id="serviceModalTitle">Servis Ekle</b><small>Çoklu kontrol: Web, Ping, PostgreSQL ve desteklenen diğer kontrol tipleri.</small></div><button type="button" class="icon-close" data-action="close-modal">×</button></div><form id="serviceForm"></form><div id="serviceFormActions" class="service-form-actions"><button type="button" class="btn" data-action="close-modal">İptal</button><button type="submit" form="serviceForm" id="serviceSaveBtn" class="btn primary">Kaydet</button></div></div></div>
+<div id="loginOverlay" class="login-overlay hidden">
+  <div class="login-card">
+    <div class="brand"><img class="brand-logo" src="/static/assets/um-logo.svg" alt="UM — Uptime Monitor Service"><div class="brand-text"><b>Uptime Monitor Service</b><small>Güvenli Giriş</small></div></div>
+    <h2>Oturum aç</h2><p class="muted">Yönetici hesabınızla giriş yapın. İlk girişte fabrika şifresi kullanılıyorsa değiştirmeniz istenir.</p>
+    <form id="loginForm">
+      <div class="field"><label>Kullanıcı adı</label><input id="loginUsername" autocomplete="username" value="admin" required></div>
+      <div class="field"><label>Şifre</label><input id="loginPassword" type="password" autocomplete="current-password" required></div>
+      <button class="btn primary full-btn">Giriş Yap</button>
+      <div id="loginError" class="form-error"></div>
+    </form>
+  </div>
+</div>
+<div id="passwordChangeOverlay" class="login-overlay hidden">
+  <div class="login-card password-card">
+    <div class="brand"><img class="brand-logo" src="/static/assets/um-logo.svg" alt="UM — Uptime Monitor Service"><div class="brand-text"><b>Uptime Monitor Service</b><small>İlk giriş güvenliği</small></div></div>
+    <h2>Yeni şifrenizi belirleyin</h2>
+    <p class="muted">Devam etmek için hesabınızın şifresini değiştirmeniz gerekiyor.</p>
+    <form id="forcedPasswordForm">
+      <div class="field" id="currentPasswordWrap"><label>Mevcut şifre</label><input id="currentPassword" type="password" autocomplete="current-password"></div>
+      <div class="field"><label>Yeni şifre</label><input id="newPassword" type="password" autocomplete="new-password" minlength="6" required></div>
+      <div class="field"><label>Yeni şifre tekrar</label><input id="newPassword2" type="password" autocomplete="new-password" minlength="6" required></div>
+      <button class="btn primary full-btn">Şifreyi Değiştir</button>
+      <div id="passwordChangeError" class="form-error"></div>
+    </form>
+  </div>
+</div>
+<div id="globalProgress" class="global-progress"><i></i></div><div id="toastRoot"></div>
+<script src="/static/js/app.js?v=um-20261009-01"></script>
+</body></html>

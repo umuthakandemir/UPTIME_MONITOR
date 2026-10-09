@@ -1,0 +1,14 @@
+<div class="page-head dashboard-head"><div><h2>Genel Bakış</h2><p>Servis sağlığı, erişilebilirlik, latency, olaylar ve güvenlik sinyallerini tek ekranda takip edin.</p></div><div class="range-tabs" id="dashboardRange"><button class="range-tab active" data-period="24h">24 Saat</button><button class="range-tab" data-period="7d">7 Gün</button><button class="range-tab" data-period="30d">30 Gün</button></div></div>
+<div id="stats" class="stat-grid"></div>
+<div class="dashboard-grid analytics-dashboard">
+  <div class="panel span-2"><div class="panel-head"><div><b>Erişilebilirlik Trendi</b><small>Uptime yüzdesi · seçilen dönem</small></div><span class="chart-live">● Canlı veri</span></div><div id="uptimeChart" class="svg-chart"></div></div>
+  <div class="panel"><div class="panel-head"><div><b>Durum Dağılımı</b><small>Aktif servislerin durumu</small></div></div><div id="statusChart" class="donut-wrap"></div></div>
+  <div class="panel"><div class="panel-head"><div><b>Latency Trendi</b><small>Ortalama ve maksimum cevap süresi</small></div></div><div id="latencyChart" class="svg-chart"></div><div id="latencyStats" class="chart-summary"></div></div>
+  <div class="panel"><div class="panel-head"><div><b>Kontrol Trafiği</b><small>UP / WARNING / DOWN ölçümleri</small></div></div><div id="checksChart" class="svg-chart"></div></div>
+  <div class="panel"><div class="panel-head"><div><b>Servis Tipleri</b><small>Aktif kontrol tipleri</small></div></div><div id="typeChart" class="hbar-list"></div></div>
+  <div class="panel"><div class="panel-head"><div><b>En Yüksek Latency</b><small>Seçilen dönemin ortalamasına göre</small></div></div><div id="slowestChart" class="hbar-list"></div></div>
+  <div class="panel"><div class="panel-head"><div><b>HTTP Durum Kodları</b><small>Web kontrollerinin ölçüm dağılımı</small></div></div><div id="httpStatusChart" class="hbar-list"></div></div>
+  <div class="panel"><div class="panel-head"><div><b>TLS / SSL Güvenlik Dağılımı</b><small>Son kaydedilmiş güvenlik skorları</small></div></div><div id="tlsChart" class="hbar-list"></div></div>
+  <div class="panel"><div class="panel-head"><div><b>Incident / Downtime Trendi</b><small>Kesinti olayları ve toplam downtime</small></div></div><div id="incidentChart" class="svg-chart"></div></div>
+  <div class="panel span-2"><div class="panel-head"><div><b>Öne Çıkan Servisler</b><small>DOWN/WARNING öncelikli; detaylı kontrol ve IP bilgisi</small></div></div><div id="serviceCards" class="service-grid"></div></div>
+</div>

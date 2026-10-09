@@ -1,0 +1,18 @@
+# Keep image builds free of local secrets and runtime data
+.git
+.github
+.env
+.env.*
+!.env.example
+*.db
+*.sqlite
+*.sqlite3
+*.log
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+node_modules/
+screenshots/**
+backups/
+exports/

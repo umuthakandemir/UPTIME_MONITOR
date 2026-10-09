@@ -1,0 +1,95 @@
+services:
+  proxy:
+    image: caddy:2-alpine
+    container_name: uptime-monitor-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      app:
+        condition: service_healthy
+    networks: [uptime_net]
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: uptime-monitor-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-uptime_monitor}
+      POSTGRES_USER: ${POSTGRES_USER:-uptime_monitor}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-CHANGE_ME_TO_A_UNIQUE_STRONG_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks: [uptime_net]
+
+  redis:
+    image: redis:7-alpine
+    container_name: uptime-monitor-redis
+    restart: unless-stopped
+    # Yalnızca türetilmiş (yeniden üretilebilir) önbellek tutulur: kalıcılık (RDB/AOF) kapalı,
+    # bellek dolduğunda en az kullanılan anahtarlar atılır. Redis kaybı veri kaybı değildir.
+    command: ["redis-server", "--save", "", "--appendonly", "no", "--maxmemory", "256mb", "--maxmemory-policy", "allkeys-lru"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks: [uptime_net]
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: uptime-monitor-app
+    restart: unless-stopped
+    cap_add:
+      - NET_RAW
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-uptime_monitor}:${POSTGRES_PASSWORD:-CHANGE_ME_TO_A_UNIQUE_STRONG_PASSWORD}@postgres:5432/${POSTGRES_DB:-uptime_monitor}
+      JWT_SECRET: ${JWT_SECRET:-replace-this-with-a-long-random-secret}
+      DB_POOL_SIZE: ${DB_POOL_SIZE:-20}
+      DB_MAX_OVERFLOW: ${DB_MAX_OVERFLOW:-30}
+      DB_POOL_TIMEOUT: ${DB_POOL_TIMEOUT:-30}
+      TZ: ${TZ:-Europe/Istanbul}
+      SSL_LABS_ENABLED: ${SSL_LABS_ENABLED:-true}
+      SSLYZE_TIMEOUT: ${SSLYZE_TIMEOUT:-120}
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    volumes:
+      - screenshots_data:/app/uptime-monitor-service/screenshots
+      - branding_data:/app/uptime-monitor-service/frontend/assets/branding
+    networks: [uptime_net]
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/api/health', timeout=5)\""]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+
+volumes:
+  postgres_data:
+  screenshots_data:
+  branding_data:
+  caddy_data:
+  caddy_config:
+
+networks:
+  uptime_net:
+    driver: bridge

@@ -1,0 +1,22 @@
+<div class="instant-page-head">
+  <div>
+        <h2>Anlık Test</h2>
+    <p>Servis oluşturmadan hedef üzerinde tek seferlik bağlantı, DNS, TLS ve veri tabanı testleri çalıştırın.</p>
+  </div>
+</div>
+<div class="instant-test-layout">
+  <section class="panel instant-test-panel">
+    <div class="panel-head compact"><div><b>Test Tanımı</b><small>Seçtiğiniz teste göre yalnızca gerekli alanlar gösterilir.</small></div></div>
+    <form id="instantTestForm" class="instant-form">
+      <div class="field full"><label>Hedef</label><input name="target" required placeholder="https://example.com · example.com · 10.10.10.20" autocomplete="off"></div>
+      <div class="instant-form-row">
+        <div class="field"><label>Test</label><select name="test_type" id="instantTestType">
+          <option value="auto">Otomatik</option><option value="web">Web / HTTP</option><option value="headers">HTTP Security Headers</option><option value="ssl">SSL / TLS Güvenlik</option><option value="ping">Ping / ICMP</option><option value="tcp">TCP Port</option><option value="dns">DNS</option><option value="smtp">SMTP</option><option value="mysql">MySQL</option><option value="postgresql">PostgreSQL</option><option value="redis">Redis</option>
+        </select></div>
+      </div>
+      <div id="instantDynamicFields" class="instant-dynamic-fields"></div>
+      <div class="instant-form-actions"><button type="submit" class="btn primary instant-run-btn">Testi Başlat</button><button type="button" class="mini-btn" id="instantResetBtn">Temizle</button></div>
+    </form>
+  </section>
+  <section id="instantResult" class="panel instant-result"><div class="empty">Test sonucu burada gösterilecek.</div></section>
+</div>

@@ -1,0 +1,14 @@
+fastapi>=0.115,<1
+uvicorn[standard]>=0.34,<1
+sqlalchemy>=2.0,<2.1
+httpx>=0.28,<0.29
+pydantic>=2.10,<3
+reportlab>=4.2,<5
+dnspython>=2.7,<3
+pymysql>=1.1,<2
+psycopg[binary]>=3.2,<4
+redis>=5,<8
+PyJWT>=2.10,<3
+cryptography>=44,<47
+playwright>=1.50,<2
+sslyze==6.3.1
